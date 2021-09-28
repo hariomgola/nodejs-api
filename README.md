@@ -15,7 +15,7 @@ Run Above command for functionality.
     - In-Progress
 
 ## Masde with :heart:
-portfolio :computer: https://hariomgola.github.io/
-Hire me : https://hariomgola.github.io/resume/
+ - portfolio :computer: https://hariomgola.github.io/
+ - Hire me :heart_eyes::yellow_heart: https://hariomgola.github.io/resume/
 
 ## :point_right: `I see it I love it I code it`
