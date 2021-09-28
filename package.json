@@ -4,10 +4,16 @@
   "description": "nodejs api using express and mongodb",
   "main": "app.js",
   "dependencies": {
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.8",
+    "nodemon": "^2.0.13",
+    "validator": "^13.6.0"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
