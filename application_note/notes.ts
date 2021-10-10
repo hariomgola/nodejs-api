@@ -9,9 +9,10 @@
   # All http request status
     - https://httpstatuses.com/
 
-
-
-
+  # Checking all the methods we have Access to.
+   - https://mongoosejs.com/docs/queries.html
+   
+  # promised  Chaning
 
 
 

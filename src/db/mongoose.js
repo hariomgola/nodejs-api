@@ -6,6 +6,8 @@ const chalk = require("chalk");
 mongoose
   .connect("mongodb://127.0.0.1:27017/mongoose-db", {
     useNewUrlParser: true,
+    // useCreateindex: true,
+    // useFindAndModify: true,
   })
   .then(() => {
     console.log(chalk.green(`  -> connecting to database complete`));
