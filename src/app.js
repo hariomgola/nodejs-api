@@ -142,6 +142,20 @@ const Get_Handler = () => {
       });
   });
 
+  /*   // changing above function as a async
+  app.get("/users/:id", async (request, response) => {
+    const _id = request.params.id;
+    try {
+      const user = await User.findById(_id);
+      if (!user) 
+        return response.status(400).send("User Not Found");
+      response.status(200).send(user);
+    } catch (e) {
+      response.status(500).send(e);
+    }
+  });
+  */
+
   /* - TASK - */
   app.get("/tasks", (request, response) => {
     console.clear();
@@ -193,9 +207,75 @@ const Get_Handler = () => {
   });
 };
 
+const Patch_Handler = () => {
+  app.patch("/users/:id", async (request, response) => {
+    console.clear();
+    console.log(chalk.cyan(`   ->  User Patch handler is called.`));
+    /*      Error handling      */
+    const allowedUpdate = ["name", "email", "password", "age"];
+    const updates = Object.keys(request.body);
+    // checking all field request are valid and using short hand operator
+    const isValidOpertion = updates.every((update) =>
+      allowedUpdate.includes(update)
+    );
+    // const isValidOpertion = updates.every((update) => {
+    //   return allowedUpdate.includes(update);
+    // });
+    if (!isValidOpertion) {
+      return response.status(400).send({ error: "Invalid Updates" });
+    }
+    /*     Error handling End      */
+    try {
+      const user = await User.findByIdAndUpdate(
+        request.params.id,
+        request.body,
+        { new: true, runValidators: true }
+      );
+      // 3 condition / Update badly / Update go good / There is not user with that id to update
+      if (!user) {
+        return response.status(404).send();
+      }
+
+      response.status(202).send(user);
+    } catch (e) {
+      console.log(chalk.red(`   -> Error in Patch User Handler `));
+      response.status(400).send(e);
+    }
+  });
+
+  app.patch("/tasks/:id", async (request, response) => {
+    console.clear();
+    console.log(chalk.cyan(`   -> Task Patch handler is called`));
+    /* Error handling start */
+    const allowedUpdate = ["description", "completed"];
+    const updates = Object.keys(request.body);
+    // checking all field request are valid and using short hand operator
+    const isValidOpertion = updates.every((update) =>
+      allowedUpdate.includes(update)
+    );
+    if (!isValidOpertion) {
+      return response.status(400).send({ error: "Invalid Updates" });
+    }
+    /* Error Handling End */
+    try {
+      const user = await Task.findByIdAndUpdate(request.params.id, request.body, {
+        new: true,
+        runValidators: true,
+      });
+      if (!user) {
+        return response.status(404).send();
+      }
+      response.status(202).send(user);
+    } catch (e) {
+      console.log(chalk.red(`  -> Error in Patch task Handler`));
+    }
+  });
+};
+
 /**                        --- Functionality ---                   */
 
 // functionality
-startServer();
-Post_hanlder();
-Get_Handler();
+startServer(); // starting server
+Post_hanlder(); // Create Data
+Get_Handler(); // Read Data
+Patch_Handler(); // Update Data

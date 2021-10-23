@@ -19,3 +19,7 @@ Run Above command for functionality.
  - Hire me :heart_eyes::yellow_heart: https://hariomgola.github.io/resume/
 
 ## :point_right: `I see it I love it I code it`
+
+```
+Code Protection : Active
+```

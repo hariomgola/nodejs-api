@@ -1,3 +1,11 @@
+/*
+                           fulfilled
+                            /
+ Promises --  Pending -->
+                            \
+                           rejected
+
+*/
 const chalk = require("chalk");
 
 const add = (a, b) => {
@@ -35,4 +43,22 @@ add(2, 2)
   })
   .catch((error) => {
     console.log(chalk.red(`   -> ${error}`));
+  });
+
+// Async Await concept / Async await function always return a promise
+const doSomething = () => {};
+console.log(doSomething());
+
+const _doSomething = async () => {
+  const sum = await add(1, 2);
+  const sum2 = await add(sum, 3);
+  return sum2;
+};
+
+_doSomething
+  .then((result) => {
+    console.log("Result---------->", result);
+  })
+  .catch((error) => {
+    console.log("Error --------->", error);
   });
