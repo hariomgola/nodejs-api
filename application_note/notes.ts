@@ -18,7 +18,15 @@
    - B script alogorithm
    - npm i bcryptjs
 
+  # unique email command
+  db.users.createIndex({'email':1},{unique:true})
 
+  # public routes
+   -  /users
+   -  /users/login
+
+  # Using Json web token(JWT)
+   - npm i jsonwebtoken
 
 
 

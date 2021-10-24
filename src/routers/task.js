@@ -88,10 +88,13 @@ router.patch("/tasks/:id", async (request, response) => {
   }
   /* Error Handling End */
   try {
-    const user = await Task.findByIdAndUpdate(request.params.id, request.body, {
-      new: true,
-      runValidators: true,
-    });
+    const user = await Task.findById(request.params.id);
+    updates.forEach((update) => (user[update] = request.body[update]));
+    await user.save();
+    // const user = await Task.findByIdAndUpdate(request.params.id, request.body, {
+    //   new: true,
+    //   runValidators: true,
+    // });
     if (!user) {
       return response.status(404).send();
     }

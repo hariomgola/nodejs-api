@@ -3,27 +3,38 @@ const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();
 
-router.post("/users", (request, response) => {
+router.post("/users", async (request, response) => {
   console.clear();
   console.log(
     chalk.yellow.italic.bgWhite(`  -> Users Post method is being called.`)
   );
   // console.log(chalk.yellow(`  -> ${JSON.stringify(request.body)}`));
-
   const user = new User(request.body);
-  user
-    .save()
-    .then((result) => {
-      console.log(chalk.green(`    -> ${result}`));
-      response.status(200).send(result);
-    })
-    .catch((error) => {
-      console.log(chalk.red(`     -> ${error}`));
-      response.status(400).send(error);
-      // response.send(error);
-    });
+  try {
+    await user.save();
+    const token = await user.generateAuthToken();
+    response.status(201).send({ user, token });
+  } catch (error) {
+    console.log(chalk.red(`     -> ${error}`));
+    response.status(400).send(error);
+  }
+});
 
-  // response.send('testing!')
+router.post("/users/login", async (request, response) => {
+  console.clear();
+  console.log(chalk.cyan(`   -> Login Hanlder is called`));
+  try {
+    const user = await User.findByCredentials(
+      request.body.email,
+      request.body.password
+    );
+    const token = await user.generateAuthToken();
+
+    response.status(200).send({ user, token });
+  } catch (e) {
+    console.log(chalk.red(`   -> Error in Login Handler - ${e}`));
+    response.status(400).send({ error: "Authentication failed" });
+  }
 });
 
 router.get("/users", (request, response) => {
