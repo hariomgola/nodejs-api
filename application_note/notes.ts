@@ -14,6 +14,10 @@
    
   # promised  Chaning
 
+  # Using Hanshing allgorithm for password
+   - B script alogorithm
+   - npm i bcryptjs
+
 
 
 

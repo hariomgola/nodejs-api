@@ -4,6 +4,7 @@
   "description": "nodejs api using express and mongodb",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "chalk": "^4.1.2",
     "express": "^4.17.1",
     "mongoose": "^6.0.8",

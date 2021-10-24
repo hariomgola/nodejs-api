@@ -83,10 +83,13 @@ router.patch("/users/:id", async (request, response) => {
   }
   /*     Error handling End      */
   try {
-    const user = await User.findByIdAndUpdate(request.params.id, request.body, {
-      new: true,
-      runValidators: true,
-    });
+    const user = await User.findById(request.params.id);
+    updates.forEach((update) => (user[update] = request.body[update]));
+    await user.save();
+    // const user = await User.findByIdAndUpdate(request.params.id, request.body, {
+    //   new: true,
+    //   runValidators: true,
+    // });
     // 3 condition / Update badly / Update go good / There is not user with that id to update
     if (!user) {
       return response.status(404).send();
