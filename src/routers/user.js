@@ -1,6 +1,7 @@
 const chalk = require("chalk");
 const express = require("express");
 const User = require("../models/user");
+const auth = require("../middleware/authentication");
 const router = new express.Router();
 
 router.post("/users", async (request, response) => {
@@ -37,8 +38,9 @@ router.post("/users/login", async (request, response) => {
   }
 });
 
-router.get("/users", (request, response) => {
-  console.clear();
+/*// Admin Only 
+router.get("/users",auth, (request, response) => {
+  // console.clear();
   console.log(chalk.cyan("    -> Users get handler is called"));
 
   User.find()
@@ -50,6 +52,24 @@ router.get("/users", (request, response) => {
       console.log(chalk.red(`Error from User  -> ${JSON.stringify(error)}`));
       response.status(500).send("{ Error : Internal Server Error }");
     });
+});*/
+
+router.get("/users/me", auth, async (request, response) => {
+  response.send(request.user);
+});
+
+// User logout
+router.post("/users/logout", auth, async (req, res) => {
+  try {
+    req.user.token = req.user.tokens.filter((token) => {
+      return token.token !== req.token;
+    });
+    await req.user.save();
+    res.status(200).send();
+  } catch (e) {
+    console.log("----->", e);
+    res.status(500).send();
+  }
 });
 
 router.get("/users/:id", (request, response) => {

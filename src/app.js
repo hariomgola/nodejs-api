@@ -37,6 +37,25 @@ require("./db/mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 
+/*// express middle ware function to use
+app.use((req, res, next) => {
+  console.log(` Method -> ${req.method}  path -> ${req.path}`);
+  if (req.method === "GET") {
+    res.send({ error: "Get Request is disabled" });
+  } else {
+    next();
+  }
+});
+
+// Site maintainance message
+app.use((req, res, next) => {
+  console.log(`  -> Maintaince middle ware method is called`);
+  res
+    .status(503)
+    .send({ error: "Site is under maintainance please try back soon" });
+});
+*/
+
 // Paser incoming json to object
 app.use(express.json());
 app.use(userRouter);

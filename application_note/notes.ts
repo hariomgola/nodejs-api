@@ -28,6 +28,10 @@
   # Using Json web token(JWT)
    - npm i jsonwebtoken
 
+  # Using middle ware for all routes except create user or login
+   - Without middleware : new request => run route handler
+   - with middleware : new request => do something => run route handler
+
 
 
 
