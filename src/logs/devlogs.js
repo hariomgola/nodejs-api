@@ -18,13 +18,13 @@ const messageLog = (message) => {
   console.log(chalk.green(`|>_ Custom log - ${message}`));
 };
 
-const specialLog = (message)=>{
-    console.log(chalk.yellow(`|>_ ${message}`))
-}
+const specialLog = (message) => {
+  console.log(chalk.yellow(`|>_ ${message}`));
+};
 
 module.exports = {
   handlerLog,
   errorLog,
   messageLog,
-  specialLog
+  specialLog,
 };

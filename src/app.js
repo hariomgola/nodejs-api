@@ -21,10 +21,9 @@
   {"_id":"5478454656784dfsf", description:"Order biryani", "Status":"Not completed"}
 
  */
-// console printing functionality 
-const specialLog = require('./logs/devlogs').specialLog;
-// console printing functionality 
-
+// console printing functionality
+const specialLog = require("./logs/devlogs").specialLog;
+// console printing functionality
 
 const chalk = require("chalk");
 const express = require("express");
@@ -69,7 +68,7 @@ app.use(taskRouter);
 const startServer = () => {
   console.clear();
   app.listen(port, () => {
-    specialLog(`Server is up and running at ${port}`)
+    specialLog(`Server is up and running at ${port}`);
   });
 };
 

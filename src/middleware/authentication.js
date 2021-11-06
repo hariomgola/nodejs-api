@@ -19,17 +19,17 @@ const auth = async (req, res, next) => {
   try {
     // taking value from the header from request
     const token = req.header("Authorization").replace("Bearer ", "");
-    handler_message(`Token - ${token}`)
+    handler_message(`Token - ${token}`);
     // decoding the value using jwt library
     const decoded = jsonwebtoken.verify(token, "secret code");
-    handler_message(`Decoded - ${decoded}`)
+    handler_message(`Decoded - ${decoded}`);
     // Checking wheather the user passed token is present in db or not
     const user = await User.findOne({
       _id: decoded._id,
       "tokens.token": token,
     });
     if (!user) {
-      handler_message(` User Not found throwing error to cancel Request`)
+      handler_message(` User Not found throwing error to cancel Request`);
       throw new Error();
     }
 
