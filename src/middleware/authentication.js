@@ -1,8 +1,21 @@
 const jsonwebtoken = require("jsonwebtoken");
 const User = require("../models/user");
 
+// console printing functionality
+const logs = require("../logs/devlogs");
+const handler_log = logs.handlerLog;
+const handler_error = logs.errorLog;
+const handler_message = logs.messageLog;
+// console printing functionality
+
+/**
+ * Authentication functionality working as express middleware
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 const auth = async (req, res, next) => {
-  console.log("  -> Authentication middle ware is called");
+  handler_log("Authentication", "Middleware");
   try {
     // taking value from the header from request
     const token = req.header("Authorization").replace("Bearer ", "");
@@ -26,8 +39,8 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (e) {
-    console.log("Error in Authentication middleware", e);
-    res.status(401).send({ error: "Please authenticate." });
+    handler_error("Authentication", "Middleware", e);
+    res.status(401).send({ error: "Please Authenticate" });
   }
 };
 

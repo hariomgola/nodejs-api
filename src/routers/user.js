@@ -8,9 +8,12 @@ const router = new express.Router();
 const logs = require("../logs/devlogs");
 const handler_log = logs.handlerLog;
 const handler_error = logs.errorLog;
+const handler_message = logs.messageLog;
 // console printing functionality
 
-/*// Admin Only functionality
+/**
+ * Admin fnctionality for admin Access only
+ */ /*
 router.get("/users",auth, (request, response) => {
   handler_log('users','post');
   User.find()
@@ -24,7 +27,10 @@ router.get("/users",auth, (request, response) => {
     });
 });
 */
-// create user
+
+/**
+ * Create User Router
+ */
 router.post("/users", async (request, response) => {
   handler_log("users", "post");
   // console.log(chalk.yellow(`  -> ${JSON.stringify(request.body)}`));
@@ -38,7 +44,9 @@ router.post("/users", async (request, response) => {
     response.status(400).send(error);
   }
 });
-
+/**
+ * Read Own Profile Router
+ */
 router.get("/users/me", auth, async (request, response) => {
   handler_log("Users ME", "get");
   try {
@@ -48,7 +56,9 @@ router.get("/users/me", auth, async (request, response) => {
     response.status(500).send();
   }
 });
-
+/**
+ * Login User Router
+ */
 router.post("/users/login", async (request, response) => {
   handler_log("Login-users", "post");
   try {
@@ -64,8 +74,9 @@ router.post("/users/login", async (request, response) => {
     response.status(400).send({ error: "Authentication failed" });
   }
 });
-
-// logout with single token
+/**
+ * Single device logout functionality
+ */
 router.post("/users/logout", auth, async (request, response) => {
   handler_log("logout", "post");
   try {
@@ -81,8 +92,9 @@ router.post("/users/logout", auth, async (request, response) => {
     response.status(500).send();
   }
 });
-
-// logout for all tokens
+/**
+ * All Device logout functionality
+ */
 router.post("/users/logoutAll", auth, async (request, response) => {
   handler_log("logout All", "post");
   try {
@@ -96,7 +108,9 @@ router.post("/users/logoutAll", auth, async (request, response) => {
     response.status(500).send();
   }
 });
-
+/**
+ * Find User profile by Id functionality
+ */
 router.get("/users/:id", (request, response) => {
   handler_log("users", "get");
   const _id = request.params.id;
@@ -118,7 +132,9 @@ router.get("/users/:id", (request, response) => {
       response.status(500).send();
     });
 });
-
+/**
+ * Update User profile functionality
+ */
 router.patch("/users/:id", async (request, response) => {
   handler_log("users", "patch(update)");
   /*      Error handling      */
@@ -154,7 +170,9 @@ router.patch("/users/:id", async (request, response) => {
     response.status(400).send(e);
   }
 });
-
+/**
+ * Delete User profile functionality
+ */
 router.delete("/users/:id", async (request, response) => {
   handler_log("users", "delete");
   try {

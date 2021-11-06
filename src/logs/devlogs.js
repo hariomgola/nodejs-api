@@ -14,7 +14,12 @@ const errorLog = (handler_name, handler_method, _error) => {
   );
 };
 
+const messageLog = (message) => {
+  console.log(chalk.green(`|> Custom log - ${message}`));
+};
+
 module.exports = {
   handlerLog,
   errorLog,
+  messageLog
 };
