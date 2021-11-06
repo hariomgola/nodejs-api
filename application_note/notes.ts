@@ -32,6 +32,9 @@
    - Without middleware : new request => run route handler
    - with middleware : new request => do something => run route handler
 
+  # Mongoose Topics
+   - Virtuals and populate (Important topics in mongoose)
+
 
 
 

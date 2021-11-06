@@ -54,6 +54,13 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+// virual property for User Task Relation
+userSchema.virtual("tasks", {
+  ref: "Task",
+  localField:'_id',
+  foreignField:'owner'
+});
+
 // Creating method to generate authentication token - instance method are accessible on instance called instance method
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
@@ -67,7 +74,7 @@ userSchema.methods.generateAuthToken = async function () {
 };
 
 // creating method to hide sensitive data
-userSchema.methods.toJSON =  function () {
+userSchema.methods.toJSON = function () {
   const user = this;
   // get value by using toObject method provided by mongoose
   const userObject = user.toObject();

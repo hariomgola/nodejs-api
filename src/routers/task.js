@@ -1,4 +1,5 @@
 const express = require("express");
+const auth = require("../middleware/authentication");
 const Task = require("../models/task");
 const router = new express.Router();
 
@@ -9,19 +10,18 @@ const handler_error = logs.errorLog;
 const handler_message = logs.messageLog;
 // console printing functionality
 
-router.post("/tasks", (request, response) => {
+router.post("/tasks", auth, async (request, response) => {
   handler_log("Task", "post");
-  const task = new Task(request.body);
-  task
-    .save()
-    .then((result) => {
-      handler_message(result)
-      response.status(201).send(result);
-    })
-    .catch((e) => {
-      handler_error("Task", "post", e);
-      response.status(400).send(error);
-    });
+  const task = new Task({
+    ...request.body,
+    owner: request.user._id,
+  });
+  try {
+    await task.save();
+    response.status(201).send(task);
+  } catch (e) {
+    response.status(400).send(e);
+  }
 });
 
 router.get("/tasks", (request, response) => {
@@ -43,12 +43,12 @@ router.get("/tasks", (request, response) => {
 router.get("/tasks/:id", (request, response) => {
   handler_log("Single Task", "post");
   const _id = request.params.id;
-  handler_message(`Requested Id - ${_id}`)
+  handler_message(`Requested Id - ${_id}`);
 
   Task.findById(_id)
     .then((task) => {
       if (!task) {
-        handler_message(`Task Not found`)
+        handler_message(`Task Not found`);
         return request.status(404).send();
       }
 
