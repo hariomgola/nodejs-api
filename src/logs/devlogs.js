@@ -9,10 +9,12 @@ const handlerLog = (handler_name, handler_method) => {
 };
 
 const errorLog = (handler_name, handler_method, _error) => {
-  console.log(chalk.red(`|> Error in ${handler_name} called with ${handler_method}`));
+  console.log(
+    chalk.red(`|> Error in ${handler_name} called with ${handler_method}`)
+  );
 };
 
 module.exports = {
   handlerLog,
-  errorLog
+  errorLog,
 };
