@@ -3,79 +3,67 @@ const express = require("express");
 const Task = require("../models/task");
 const router = new express.Router();
 
-router.post("/tasks", (request, response) => {
-  console.clear();
-  console.log(
-    chalk.yellow.italic.bgWhite(`  -> Users Post method is being called.`)
-  );
-  // console.log(chalk.yellow(`  -> ${JSON.stringify(request.body)}`));
+// console printing functionality
+const logs = require("../logs/devlogs");
+const handler_log = logs.handlerLog;
+const handler_error = logs.errorLog;
+const handler_message = logs.messageLog;
+// console printing functionality
 
+router.post("/tasks", (request, response) => {
+  handler_log("Task", "post");
   const task = new Task(request.body);
   task
     .save()
     .then((result) => {
-      console.log(chalk.green(`    -> ${result}`));
+      handler_message(result)
       response.status(201).send(result);
     })
-    .catch((error) => {
-      console.log(chalk.red(`     -> ${error}`));
+    .catch((e) => {
+      handler_error("Task", "post", e);
       response.status(400).send(error);
-      // response.send(error);
     });
-
-  // response.send('testing!')
 });
 
 router.get("/tasks", (request, response) => {
-  console.clear();
-  console.log(chalk.cyan("   -> task get Handler is called"));
-
+  handler_log("Task", "get");
   // Task.find({
   //   completed: true,
   // })
   Task.find()
     .then((task) => {
       response.status(200).send(task);
-      console.log(
-        chalk.green(`   -> Response from Task get - ${JSON.stringify(task)}`)
-      );
+      handler_message(task);
     })
-    .catch((error) => {
+    .catch((e) => {
+      handler_error("Task", "get", e);
       response.status(500).send();
-      console.log(chalk.red(`    -> Error from Task get Handler - ${error}`));
     });
 });
 
 router.get("/tasks/:id", (request, response) => {
-  console.clear();
-  console.log(chalk.cyan("   -> task Single Handler is called"));
-
+  handler_log("Single Task", "post");
   const _id = request.params.id;
-  console.log(chalk.cyan(`   -> requester id - ${_id}`));
+  handler_message(`Requested Id - ${_id}`)
 
   Task.findById(_id)
     .then((task) => {
       if (!task) {
-        console.log(chalk.cyan("   -> Task with particular id not found"));
+        handler_message(`Task Not found`)
         return request.status(404).send();
       }
 
-      console.log(
-        chalk.green(
-          ` Result from Single Task Handler - ${JSON.stringify(task)}`
-        )
-      );
+      handler_message(`Task - ${task}`);
       response.status(200).send(task);
     })
-    .catch((error) => {
-      console.log(chalk.red(`  -> Error from Single Task Handler - ${error}`));
+    .catch((e) => {
+      handler_error("Single Task", "post", e);
       response.status(500).send();
     });
 });
 
 router.patch("/tasks/:id", async (request, response) => {
-  console.clear();
-  console.log(chalk.cyan(`   -> Task Patch handler is called`));
+  handler_log("Task", "patch (Update)");
   /* Error handling start */
   const allowedUpdate = ["description", "completed"];
   const updates = Object.keys(request.body);
@@ -100,13 +88,13 @@ router.patch("/tasks/:id", async (request, response) => {
     }
     response.status(202).send(user);
   } catch (e) {
-    console.log(chalk.red(`  -> Error in Patch task Handler`));
+    handler_error("Task", "patch (Update)", e);
+    response.status(500).send();
   }
 });
 
 router.delete("/tasks/:id", async (request, response) => {
-  console.clear();
-  console.log(chalk.cyan("   -> Task Delete Handler is called"));
+  handler_log("Task", "Delete");
   try {
     const task = await Task.findByIdAndDelete(request.params.id);
     if (!task) {
@@ -114,7 +102,7 @@ router.delete("/tasks/:id", async (request, response) => {
     }
     response.status(200).send(task);
   } catch (e) {
-    console.log(chalk.red("  -> Error in Delete Task Handler"));
+    handler_error("Task", "Delete", e);
     return response.status(500).send({ error: "Internal Server Error" });
   }
 });
