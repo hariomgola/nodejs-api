@@ -25,7 +25,6 @@
 const specialLog = require("./logs/devlogs").specialLog;
 // console printing functionality
 
-const chalk = require("chalk");
 const express = require("express");
 const User = require("./models/user");
 const Task = require("./models/task");

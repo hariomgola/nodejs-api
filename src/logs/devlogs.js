@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const env = require("../env/enviournment.package.json");
 
 const handlerLog = (handler_name, handler_method) => {
   console.log(
@@ -12,6 +13,9 @@ const errorLog = (handler_name, handler_method, _error) => {
   console.log(
     chalk.red(`|>_ Error in ${handler_name} called with ${handler_method}`)
   );
+  if (env.serverErrorLog) {
+    console.log(chalk.reset(`|>_ ${e}`));
+  }
 };
 
 const messageLog = (message) => {

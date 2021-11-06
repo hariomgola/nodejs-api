@@ -1,4 +1,3 @@
-const chalk = require("chalk");
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/authentication");
