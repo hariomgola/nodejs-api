@@ -3,23 +3,28 @@ const chalk = require("chalk");
 const handlerLog = (handler_name, handler_method) => {
   console.log(
     chalk.cyan.underline(
-      `|> ${handler_name} called with ${handler_method} functionality`
+      `|>_ ${handler_name} called with ${handler_method} functionality`
     )
   );
 };
 
 const errorLog = (handler_name, handler_method, _error) => {
   console.log(
-    chalk.red(`|> Error in ${handler_name} called with ${handler_method}`)
+    chalk.red(`|>_ Error in ${handler_name} called with ${handler_method}`)
   );
 };
 
 const messageLog = (message) => {
-  console.log(chalk.green(`|> Custom log - ${message}`));
+  console.log(chalk.green(`|>_ Custom log - ${message}`));
 };
+
+const specialLog = (message)=>{
+    console.log(chalk.yellow(`|>_ ${message}`))
+}
 
 module.exports = {
   handlerLog,
   errorLog,
-  messageLog
+  messageLog,
+  specialLog
 };

@@ -9,24 +9,23 @@ const logs = require("../logs/devlogs");
 const handler_log = logs.handlerLog;
 const handler_error = logs.errorLog;
 const handler_message = logs.messageLog;
-// console printing functionality
+// console printing functionality 
 
 /**
  * Admin fnctionality for admin Access only
  */ /*
 router.get("/users",auth, (request, response) => {
-  handler_log('users','post');
+  handler_log('users','get');
   User.find()
     .then((users) => {
       response.status(201).send(users);
-      console.log(chalk.green(`Result from User  -> ${users}`));
+      handler_message(` All Data from DB - ${JSON.stringify(user)}`);
     })
     .catch((error) => {
-      console.log(chalk.red(`Error from User  -> ${JSON.stringify(error)}`));
+      handler_log('users','get');
       response.status(500).send("{ Error : Internal Server Error }");
     });
-});
-*/
+});*/
 
 /**
  * Create User Router
@@ -98,9 +97,9 @@ router.post("/users/logout", auth, async (request, response) => {
 router.post("/users/logoutAll", auth, async (request, response) => {
   handler_log("logout All", "post");
   try {
-    console.log(request.user);
+    handler_message(` Tokens before request - ${request.user.tokens}`);
     request.user.tokens = [];
-    console.log(request.user);
+    handler_message(` Tokens After request - ${request.user.tokens}`);
     await request.user.save();
     response.status(200).send("Successfully logout");
   } catch (e) {
@@ -114,17 +113,15 @@ router.post("/users/logoutAll", auth, async (request, response) => {
 router.get("/users/:id", (request, response) => {
   handler_log("users", "get");
   const _id = request.params.id;
-  console.log(chalk.yellow(`   -> Request Id from Users/ - ${_id}`));
+  handler_message(`Request id ${_id}`);
 
   User.findById(_id)
     .then((user) => {
       if (!user) {
-        console.log(chalk.cyan("     -> User with particular Id not found"));
+        handler_message(`User Not found`);
         return response.status(404).send();
       }
-      console.log(
-        chalk.green(`   -> Single User Data with Particular Id - ${user}`)
-      );
+      handler_message(`User Data - ${user}`);
       response.status(200).send(user);
     })
     .catch((e) => {
