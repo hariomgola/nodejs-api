@@ -38,6 +38,38 @@ router.post("/users/login", async (request, response) => {
   }
 });
 
+// logout with single token
+router.post("/users/logout", auth, async (request, response) => {
+  console.log(`  -> Logout user handler is called`);
+  try {
+    // Kepping rest of token and deleting other tokens
+    request.user.tokens = request.user.tokens.filter((token) => {
+      return token.token !== request.token;
+    });
+
+    await request.user.save();
+    response.status(200).send("Successfully logout");
+  } catch (e) {
+    console.log(" -> Error in Logout Handler ", e);
+    response.status(500).send();
+  }
+});
+
+// logout for all tokens
+router.post("/users/logoutAll", auth, async (request, response) => {
+  console.log(`  -> Logout All user handler is called`);
+  try {
+    console.log(request.user);
+    request.user.tokens = [];
+    console.log(request.user);
+    await request.user.save();
+    response.status(200).send("Successfully logout");
+  } catch (e) {
+    console.log(" -> Error in Logout All Handler ", e);
+    response.status(500).send();
+  }
+});
+
 /*// Admin Only 
 router.get("/users",auth, (request, response) => {
   // console.clear();
