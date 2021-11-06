@@ -7,6 +7,7 @@ const router = new express.Router();
 // console printing functionality
 const logs = require("../logs/devlogs");
 const handler_log = logs.handlerLog;
+const handler_error = logs.errorLog;
 // console printing functionality
 
 /*// Admin Only functionality
@@ -32,14 +33,20 @@ router.post("/users", async (request, response) => {
     await user.save();
     const token = await user.generateAuthToken();
     response.status(201).send({ user, token });
-  } catch (error) {
-    console.log(chalk.red(`     -> ${error}`));
+  } catch (e) {
+    handler_error("users", "post");
     response.status(400).send(error);
   }
 });
 
 router.get("/users/me", auth, async (request, response) => {
-  response.send(request.user);
+  handler_log("Users ME", "get");
+  try {
+    response.send(request.user);
+  } catch (e) {
+    handler_error("Users ME", "get", e);
+    response.status(500).send();
+  }
 });
 
 router.post("/users/login", async (request, response) => {
@@ -53,7 +60,7 @@ router.post("/users/login", async (request, response) => {
 
     response.status(200).send({ user, token });
   } catch (e) {
-    console.log(chalk.red(`   -> Error in Login Handler - ${e}`));
+    handler_error("users", "post", e);
     response.status(400).send({ error: "Authentication failed" });
   }
 });
@@ -70,7 +77,7 @@ router.post("/users/logout", auth, async (request, response) => {
     await request.user.save();
     response.status(200).send("Successfully logout");
   } catch (e) {
-    console.log(" -> Error in Logout Handler ", e);
+    handler_error("users", "post", e);
     response.status(500).send();
   }
 });
@@ -85,7 +92,7 @@ router.post("/users/logoutAll", auth, async (request, response) => {
     await request.user.save();
     response.status(200).send("Successfully logout");
   } catch (e) {
-    console.log(" -> Error in Logout All Handler ", e);
+    handler_error("users", "post", e);
     response.status(500).send();
   }
 });
@@ -106,8 +113,8 @@ router.get("/users/:id", (request, response) => {
       );
       response.status(200).send(user);
     })
-    .catch((error) => {
-      console.log(chalk.red(`Error from User  -> ${JSON.stringify(error)}`));
+    .catch((e) => {
+      handler_error("users", "post", e);
       response.status(500).send();
     });
 });
@@ -143,7 +150,7 @@ router.patch("/users/:id", async (request, response) => {
 
     response.status(202).send(user);
   } catch (e) {
-    console.log(chalk.red(`   -> Error in Patch User Handler `));
+    handler_error("users", "post", e);
     response.status(400).send(e);
   }
 });
@@ -158,7 +165,7 @@ router.delete("/users/:id", async (request, response) => {
 
     response.status(200).send(user);
   } catch (e) {
-    console.log(chalk.red("  -> Error in Delete User Handler"));
+    handler_error("users", "post", e);
     return response.status(500).send({ error: "Internal Server Error" });
   }
 });
