@@ -4,11 +4,28 @@ const User = require("../models/user");
 const auth = require("../middleware/authentication");
 const router = new express.Router();
 
+// console printing functionality
+const logs = require("../logs/devlogs");
+const handler_log = logs.handlerLog;
+// console printing functionality
+
+/*// Admin Only functionality
+router.get("/users",auth, (request, response) => {
+  handler_log('users','post');
+  User.find()
+    .then((users) => {
+      response.status(201).send(users);
+      console.log(chalk.green(`Result from User  -> ${users}`));
+    })
+    .catch((error) => {
+      console.log(chalk.red(`Error from User  -> ${JSON.stringify(error)}`));
+      response.status(500).send("{ Error : Internal Server Error }");
+    });
+});
+*/
+// create user
 router.post("/users", async (request, response) => {
-  console.clear();
-  console.log(
-    chalk.yellow.italic.bgWhite(`  -> Users Post method is being called.`)
-  );
+  handler_log("users", "post");
   // console.log(chalk.yellow(`  -> ${JSON.stringify(request.body)}`));
   const user = new User(request.body);
   try {
@@ -21,9 +38,12 @@ router.post("/users", async (request, response) => {
   }
 });
 
+router.get("/users/me", auth, async (request, response) => {
+  response.send(request.user);
+});
+
 router.post("/users/login", async (request, response) => {
-  console.clear();
-  console.log(chalk.cyan(`   -> Login Hanlder is called`));
+  handler_log("Login-users", "post");
   try {
     const user = await User.findByCredentials(
       request.body.email,
@@ -40,7 +60,7 @@ router.post("/users/login", async (request, response) => {
 
 // logout with single token
 router.post("/users/logout", auth, async (request, response) => {
-  console.log(`  -> Logout user handler is called`);
+  handler_log("logout", "post");
   try {
     // Kepping rest of token and deleting other tokens
     request.user.tokens = request.user.tokens.filter((token) => {
@@ -57,7 +77,7 @@ router.post("/users/logout", auth, async (request, response) => {
 
 // logout for all tokens
 router.post("/users/logoutAll", auth, async (request, response) => {
-  console.log(`  -> Logout All user handler is called`);
+  handler_log("logout All", "post");
   try {
     console.log(request.user);
     request.user.tokens = [];
@@ -70,44 +90,8 @@ router.post("/users/logoutAll", auth, async (request, response) => {
   }
 });
 
-/*// Admin Only 
-router.get("/users",auth, (request, response) => {
-  // console.clear();
-  console.log(chalk.cyan("    -> Users get handler is called"));
-
-  User.find()
-    .then((users) => {
-      response.status(201).send(users);
-      console.log(chalk.green(`Result from User  -> ${users}`));
-    })
-    .catch((error) => {
-      console.log(chalk.red(`Error from User  -> ${JSON.stringify(error)}`));
-      response.status(500).send("{ Error : Internal Server Error }");
-    });
-});*/
-
-router.get("/users/me", auth, async (request, response) => {
-  response.send(request.user);
-});
-
-// User logout
-router.post("/users/logout", auth, async (req, res) => {
-  try {
-    req.user.token = req.user.tokens.filter((token) => {
-      return token.token !== req.token;
-    });
-    await req.user.save();
-    res.status(200).send();
-  } catch (e) {
-    console.log("----->", e);
-    res.status(500).send();
-  }
-});
-
 router.get("/users/:id", (request, response) => {
-  console.clear();
-  console.log(chalk.cyan("    -> Single Users get handler is called"));
-
+  handler_log("users", "get");
   const _id = request.params.id;
   console.log(chalk.yellow(`   -> Request Id from Users/ - ${_id}`));
 
@@ -129,8 +113,7 @@ router.get("/users/:id", (request, response) => {
 });
 
 router.patch("/users/:id", async (request, response) => {
-  console.clear();
-  console.log(chalk.cyan(`   ->  User Patch handler is called.`));
+  handler_log("users", "patch(update)");
   /*      Error handling      */
   const allowedUpdate = ["name", "email", "password", "age"];
   const updates = Object.keys(request.body);
@@ -166,8 +149,7 @@ router.patch("/users/:id", async (request, response) => {
 });
 
 router.delete("/users/:id", async (request, response) => {
-  console.clear();
-  console.log(chalk.cyan("   -> User Delete Handler is called"));
+  handler_log("users", "delete");
   try {
     const user = await User.findByIdAndDelete(request.params.id);
     if (!user) {
