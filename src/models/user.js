@@ -66,6 +66,17 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
+// creating method to hide sensitive data
+userSchema.methods.toJSON =  function () {
+  const user = this;
+  // get value by using toObject method provided by mongoose
+  const userObject = user.toObject();
+  // deleting object properties
+  delete userObject.password;
+  delete userObject.tokens;
+  return userObject;
+};
+
 // User Schema for credential check - static method are accessible on model called model method
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });

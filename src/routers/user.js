@@ -8,23 +8,82 @@ const logs = require("../logs/devlogs");
 const handler_log = logs.handlerLog;
 const handler_error = logs.errorLog;
 const handler_message = logs.messageLog;
-// console printing functionality 
+// console printing functionality
 
 /**
  * Admin fnctionality for admin Access only
- */ /*
-router.get("/users",auth, (request, response) => {
-  handler_log('users','get');
-  User.find()
-    .then((users) => {
-      response.status(201).send(users);
-      handler_message(` All Data from DB - ${JSON.stringify(user)}`);
-    })
-    .catch((error) => {
-      handler_log('users','get');
-      response.status(500).send("{ Error : Internal Server Error }");
-    });
-});*/
+ */
+const env = require("../env/enviournment.package.json");
+if (env.Admin) {
+  router.get("/users", auth, (request, response) => {
+    handler_log("users", "get");
+    User.find()
+      .then((users) => {
+        response.status(201).send(users);
+        handler_message(` All Data from DB - ${JSON.stringify(user)}`);
+      })
+      .catch((error) => {
+        handler_log("users", "get");
+        response.status(500).send("{ Error : Internal Server Error }");
+      });
+  });
+  /**
+   * Delete User profile functionality
+   */
+  router.delete("/users/:id", async (request, response) => {
+    handler_log("users", "delete");
+    try {
+      const user = await User.findByIdAndDelete(request.params.id);
+      if (!user) {
+        return response.status(404).send({ error: "User Not found" });
+      }
+
+      response.status(200).send(user);
+    } catch (e) {
+      handler_error("users", "post", e);
+      return response.status(500).send({ error: "Internal Server Error" });
+    }
+  });
+  /**
+   * Update User profile functionality
+   */
+  router.patch("/users/:id", async (request, response) => {
+    handler_log("users", "patch(update)");
+    /*      Error handling      */
+    const allowedUpdate = ["name", "email", "password", "age"];
+    const updates = Object.keys(request.body);
+    // checking all field request are valid and using short hand operator
+    const isValidOpertion = updates.every((update) =>
+      allowedUpdate.includes(update)
+    );
+    // const isValidOpertion = updates.every((update) => {
+    //   return allowedUpdate.includes(update);
+    // });
+    if (!isValidOpertion) {
+      return response.status(400).send({ error: "Invalid Updates" });
+    }
+    /*     Error handling End      */
+    try {
+      const user = await User.findById(request.params.id);
+      updates.forEach((update) => (user[update] = request.body[update]));
+      await user.save();
+      // const user = await User.findByIdAndUpdate(request.params.id, request.body, {
+      //   new: true,
+      //   runValidators: true,
+      // });
+      // 3 condition / Update badly / Update go good / There is not user with that id to update
+      if (!user) {
+        return response.status(404).send();
+      }
+
+      response.status(202).send(user);
+    } catch (e) {
+      handler_error("users", "post", e);
+      response.status(400).send(e);
+    }
+  });
+  // Admin Block Ends
+}
 
 /**
  * Create User Router
@@ -65,7 +124,8 @@ router.post("/users/login", async (request, response) => {
       request.body.password
     );
     const token = await user.generateAuthToken();
-
+    // protecting user sensitive data
+    // response.status(200).send({user:user.getPublicProfile(),token});
     response.status(200).send({ user, token });
   } catch (e) {
     handler_error("users", "post", e);
@@ -129,58 +189,41 @@ router.get("/users/:id", (request, response) => {
     });
 });
 /**
- * Update User profile functionality
+ * Update user functiuonality who only logged-in
  */
-router.patch("/users/:id", async (request, response) => {
-  handler_log("users", "patch(update)");
-  /*      Error handling      */
+router.patch("/users/me", auth, async (request, response) => {
+  handler_log("users-me", "patch (Update)");
   const allowedUpdate = ["name", "email", "password", "age"];
   const updates = Object.keys(request.body);
-  // checking all field request are valid and using short hand operator
   const isValidOpertion = updates.every((update) =>
     allowedUpdate.includes(update)
   );
-  // const isValidOpertion = updates.every((update) => {
-  //   return allowedUpdate.includes(update);
-  // });
   if (!isValidOpertion) {
     return response.status(400).send({ error: "Invalid Updates" });
   }
-  /*     Error handling End      */
   try {
-    const user = await User.findById(request.params.id);
+    const user = await User.findById(request.user._id);
     updates.forEach((update) => (user[update] = request.body[update]));
     await user.save();
-    // const user = await User.findByIdAndUpdate(request.params.id, request.body, {
-    //   new: true,
-    //   runValidators: true,
-    // });
-    // 3 condition / Update badly / Update go good / There is not user with that id to update
-    if (!user) {
-      return response.status(404).send();
-    }
-
     response.status(202).send(user);
   } catch (e) {
-    handler_error("users", "post", e);
-    response.status(400).send(e);
+    handler_error("users-me", "patch (Update)");
+    response.status(400).send({ code: 400, Result: "Invalid Update" });
   }
 });
 /**
- * Delete User profile functionality
+ * Deleting User profile which only loged in
  */
-router.delete("/users/:id", async (request, response) => {
-  handler_log("users", "delete");
+router.delete("/users/me", auth, async (request, response) => {
+  handler_log("users-me", "delete");
   try {
-    const user = await User.findByIdAndDelete(request.params.id);
-    if (!user) {
-      return response.status(404).send({ error: "User Not found" });
-    }
-
-    response.status(200).send(user);
+    // const user = await User.findByIdAndDelete(request.user._id);
+    // response.status(200).send(user);
+    await request.user.remove();
+    response.status(200).send(request.user);
   } catch (e) {
-    handler_error("users", "post", e);
-    return response.status(500).send({ error: "Internal Server Error" });
+    handler_error("users-me", "delete");
+    response.status(500).send({ error: "Internal Server Error" });
   }
 });
 
