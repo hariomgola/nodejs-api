@@ -14,7 +14,7 @@ const errorLog = (handler_name, handler_method, _error) => {
     chalk.red(`|>_ Error in ${handler_name} called with ${handler_method}`)
   );
   if (env.serverErrorLog) {
-    console.log(chalk.reset(`|>_ ${e}`));
+    console.log(chalk.reset(`|>_ ${_error}`));
   }
 };
 

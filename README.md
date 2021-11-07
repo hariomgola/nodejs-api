@@ -14,7 +14,7 @@ Run Above command for functionality.
 ## Project Status
     - In-Progress
 
-## Masde with :heart:
+## Made with :heart:
  - portfolio :computer: https://hariomgola.github.io/
  - Hire me :heart_eyes::yellow_heart: https://hariomgola.github.io/resume/
 

@@ -24,44 +24,69 @@ router.post("/tasks", auth, async (request, response) => {
   }
 });
 
-router.get("/tasks", (request, response) => {
+router.get("/tasks", auth, async (request, response) => {
   handler_log("Task", "get");
+  try {
+    // const task = await Task.find({
+    //   owner: request.user._id,
+    // });
+    // response.status(200).send(task);
+    await request.user.populate("tasks");
+    response.status(200).send(request.user.tasks);
+  } catch (e) {
+    handler_error("Task", "get", e);
+    response.status(500).send();
+  }
   // Task.find({
   //   completed: true,
   // })
-  Task.find()
-    .then((task) => {
-      response.status(200).send(task);
-      handler_message(task);
-    })
-    .catch((e) => {
-      handler_error("Task", "get", e);
-      response.status(500).send();
-    });
+  // Task.find()
+  //   .then((task) => {
+  //     response.status(200).send(task);
+  //     handler_message(task);
+  //   })
+  //   .catch((e) => {
+  //     handler_error("Task", "get", e);
+  //     response.status(500).send();
+  //   });
 });
 
-router.get("/tasks/:id", (request, response) => {
+router.get("/tasks/:id", auth, async (request, response) => {
   handler_log("Single Task", "post");
   const _id = request.params.id;
   handler_message(`Requested Id - ${_id}`);
 
-  Task.findById(_id)
-    .then((task) => {
-      if (!task) {
-        handler_message(`Task Not found`);
-        return request.status(404).send();
-      }
-
-      handler_message(`Task - ${task}`);
-      response.status(200).send(task);
-    })
-    .catch((e) => {
-      handler_error("Single Task", "post", e);
-      response.status(500).send();
+  try {
+    const task = await Task.findOne({
+      _id,
+      owner: request.user._id,
     });
+    if (!task) {
+      handler_message(`Task Not found`);
+      return response.status(404).send();
+    }
+    response.status(200).send(task);
+  } catch (e) {
+    handler_error("Single Task", "post", e);
+    response.status(500).send();
+  }
+  // Task.findById(_id)
+  //   .then((task) => {
+  //     if (!task) {
+  //       handler_message(`Task Not found`);
+  //       return request.status(404).send();
+  //     }
+
+  //     handler_message(`Task - ${task}`);
+  //     response.status(200).send(task);
+  //   })
+  //   .catch((e) => {
+  //     handler_error("Single Task", "post", e);
+  //     response.status(500).send();
+  //   });
 });
 
-router.patch("/tasks/:id", async (request, response) => {
+router.patch("/tasks/:id", auth, async (request, response) => {
   handler_log("Task", "patch (Update)");
   /* Error handling start */
   const allowedUpdate = ["description", "completed"];
@@ -75,27 +100,35 @@ router.patch("/tasks/:id", async (request, response) => {
   }
   /* Error Handling End */
   try {
-    const user = await Task.findById(request.params.id);
-    updates.forEach((update) => (user[update] = request.body[update]));
-    await user.save();
+    // const user = await Task.findById(request.params.id);
     // const user = await Task.findByIdAndUpdate(request.params.id, request.body, {
     //   new: true,
     //   runValidators: true,
     // });
-    if (!user) {
+    const task = await Task.findOne({
+      _id: request.params.id,
+      owner: request.user._id,
+    });
+    if (!task) {
       return response.status(404).send();
     }
-    response.status(202).send(user);
+    updates.forEach((update) => (task[update] = request.body[update]));
+    await task.save();
+    response.status(202).send(task);
   } catch (e) {
     handler_error("Task", "patch (Update)", e);
     response.status(500).send();
   }
 });
 
-router.delete("/tasks/:id", async (request, response) => {
+router.delete("/tasks/:id", auth, async (request, response) => {
   handler_log("Task", "Delete");
   try {
-    const task = await Task.findByIdAndDelete(request.params.id);
+    // const task = await Task.findByIdAndDelete(request.params.id);
+    const task = await Task.findOneAndDelete({
+      _id: request.params.id,
+      owner: request.user._id,
+    });
     if (!task) {
       return response.status(404).send({ error: "Task Not found" });
     }
