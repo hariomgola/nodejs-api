@@ -202,10 +202,13 @@ router.patch("/users/me", auth, async (request, response) => {
     return response.status(400).send({ error: "Invalid Updates" });
   }
   try {
-    const user = await User.findById(request.user._id);
-    updates.forEach((update) => (user[update] = request.body[update]));
-    await user.save();
-    response.status(202).send(user);
+    // const user = await User.findById(request.user._id);
+    // updates.forEach((update) => (user[update] = request.body[update]));
+    // await user.save();
+    // response.status(202).send(user);
+    updates.forEach((update) => (request.user[update] = request.body[update]));
+    await request.user.save()
+    response.status(202).send(request.user);
   } catch (e) {
     handler_error("users-me", "patch (Update)");
     response.status(400).send({ code: 400, Result: "Invalid Update" });
