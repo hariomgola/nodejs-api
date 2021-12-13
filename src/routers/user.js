@@ -96,7 +96,7 @@ router.post("/users", async (request, response) => {
     await user.save();
     const token = await user.generateAuthToken();
     response.status(201).send({ user, token });
-  } catch (e) {
+  } catch (error) {
     handler_error("users", "post");
     response.status(400).send(error);
   }
@@ -207,7 +207,7 @@ router.patch("/users/me", auth, async (request, response) => {
     // await user.save();
     // response.status(202).send(user);
     updates.forEach((update) => (request.user[update] = request.body[update]));
-    await request.user.save()
+    await request.user.save();
     response.status(202).send(request.user);
   } catch (e) {
     handler_error("users-me", "patch (Update)");
