@@ -22,4 +22,5 @@ Run Above command for functionality.
 
 ```
 Code Protection : Active
+Branch Protection : Active
 ```
