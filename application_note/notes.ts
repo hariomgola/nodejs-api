@@ -43,6 +43,7 @@
   # Implementing Timestamps with mongoose.
     - Created at  - Store timeStamp
     - Updated at  - Store timeStamp
+    - Simply Update of create schema at time stamp
 
 
 

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 // creating Task Schema
-const taskSchema = mongoose.Schema(
+const taskSchema = new mongoose.Schema(
   {
     description: {
       type: String,
