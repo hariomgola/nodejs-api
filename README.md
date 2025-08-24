@@ -1,10 +1,9 @@
-Node.js API with Express & MongoDB
-==================================
+# Node.js API with Express & MongoDB
 
 This project is a RESTful API built using Node.js, Express.js, and MongoDB. It demonstrates both session-based and token-based authentication and follows the MVC architecture for clean code organization.
 
-Features
---------
+## Features
+
 - CRUD operations with Express and MongoDB
 - Session-based authentication
 - JWT (token-based) authentication
@@ -13,8 +12,8 @@ Features
 - Environment-based configuration
 - Modular route handling
 
-Project Structure
------------------
+## Project Structure
+
 ```text
 nodejs-api/
 ├── application_note/       # Notes or documentation
@@ -31,8 +30,8 @@ nodejs-api/
 └── package-lock.json
 ```
 
-Installation & Setup
---------------------
+## Installation & Setup
+
 1. Clone the repository:
    git clone https://github.com/hariomgola/nodejs-api.git
    cd nodejs-api
@@ -41,6 +40,7 @@ Installation & Setup
    npm install
 
 3. Set up MongoDB:
+
    - Ensure MongoDB is running locally or provide a remote URI.
    - Update your .env file with the correct MongoDB URI and other environment variables.
 
@@ -50,8 +50,8 @@ Installation & Setup
    - For development (with auto-reload):
      npm run dev
 
-Dependencies
-------------
+## Dependencies
+
 - express
 - mongoose
 - jsonwebtoken
@@ -59,16 +59,16 @@ Dependencies
 - dotenv
 - bcryptjs
 
-Author
-------
+## Author
+
 Created by Hariom Gola
 Website: https://hariomgola.github.io/
 Resume: https://hariomgola.github.io/resume/
 
-Status
-------
+## Status
+
 Project is currently In Progress. Contributions and feedback are welcome!
 
-License
--------
+## License
+
 This project is licensed under the MIT License.
